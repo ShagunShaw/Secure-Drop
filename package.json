@@ -21,10 +21,12 @@
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/platform-express": "^11.0.1",
     "archiver": "^7.0.1",
+    "axios": "^1.13.5",
     "cloudinary": "^2.9.0",
     "mongoose": "^9.2.1",
     "ms": "^2.1.3",
