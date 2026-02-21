@@ -5,15 +5,19 @@ import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { ConfigModule } from '@nestjs/config'; // For .env support
 import { CloudinaryModule } from './configurations/cloudinary.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),
+  imports: [
+    ScheduleModule.forRoot(), // This "turns on" the clock
+    ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRoot(`${process.env.MONGODB_URL}`),
     CloudinaryModule,
     MulterModule.register({
   storage: memoryStorage(), // This ensures 'file.buffer' exists!
 }),
-    FileModule],
+    FileModule
+  ],
   controllers: [],
   providers: [],
 })
