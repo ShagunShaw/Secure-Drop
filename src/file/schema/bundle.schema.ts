@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from 'mongoose';
 import ms from 'ms';
 
-@Schema({ timestamps: true })
+@Schema()
 export class Bundle extends Document {
   @Prop({ required: true, unique: true })
   accessCode: string; // A short, unique ID for the URL (e.g., 'abc-123')

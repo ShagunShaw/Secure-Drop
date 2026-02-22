@@ -12,15 +12,14 @@ export class FileService {
   constructor( @InjectModel(Bundle.name) private bundleModel: Model<Bundle> ) {}
 
   // Fix: replace the parameters with the dto that we will receive from the controller
-  async uploadFile(files: Array<Express.Multer.File>, expiresIn?: string) {
+  async uploadFile(files: Array<Express.Multer.File>, expiresIn: string) {
     try{
       // Fix: if it is a single file, upload it as it is else if it is a multiple file, zip it and upload the zip file
       const zipBuffer= await zipFiles(files);
 
       const result = await uploadToCloudinary(zipBuffer);
 
-      const expiryString = expiresIn || '6h'; 
-      const expirationDate = new Date(Date.now() + ms(expiryString as any));
+      const expirationDate = new Date(Date.now() + ms(expiresIn as any));
 
       const bundle = new this.bundleModel({
         accessCode: await generateUniqueCode(this.bundleModel), // Generate a unique access code

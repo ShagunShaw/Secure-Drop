@@ -1,98 +1,186 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# SecureDrop
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A secure, temporary file-sharing REST API built with NestJS. Upload one or more files, receive a short access code, and share it — the recipient uses the code to download the files as a ZIP bundle. Bundles expire automatically and are cleaned up daily.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Multi-file upload** — upload one or multiple files in a single request; they are zipped into a bundle automatically.
+- **Access codes** — each bundle gets a short, unique access code used to download it later.
+- **Automatic expiry** — bundles expire after a configurable time window (default: 6 hours).
+- **Daily cleanup** — a scheduled cron job runs every midnight to delete expired bundles from both Cloudinary and MongoDB.
+- **File validation** — blocks dangerous file types (`.exe`, `.bat`, `.sh`) and enforces a 10 MB total upload limit.
+- **Cloud storage** — files are stored on Cloudinary; metadata is persisted in MongoDB.
 
-## Project setup
+---
 
-```bash
-$ npm install
-```
+## Tech Stack
 
-## Compile and run the project
+| Layer | Technology |
+|---|---|
+| Framework | [NestJS](https://nestjs.com/) (Node.js + TypeScript) |
+| Database | [MongoDB](https://www.mongodb.com/) via [Mongoose](https://mongoosejs.com/) |
+| File Storage | [Cloudinary](https://cloudinary.com/) |
+| File Uploads | [Multer](https://github.com/expressjs/multer) (memory storage) |
+| Compression | [Archiver](https://www.archiverjs.com/) |
+| Scheduling | [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) |
 
-```bash
-# development
-$ npm run start
+---
 
-# watch mode
-$ npm run start:dev
+## Prerequisites
 
-# production mode
-$ npm run start:prod
-```
+- Node.js v18+
+- A MongoDB connection string (local or Atlas)
+- A Cloudinary account (free tier works)
 
-## Run tests
+---
+
+## Getting Started
+
+### 1. Clone and install dependencies
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+git clone <repo-url>
+cd secure-drop
+npm install
 ```
 
-## Deployment
+### 2. Configure environment variables
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Create a `.env` file in the project root:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```env
+PORT=3000
+MONGODB_URL=your_mongodb_connection_string
+CLOUDINARY_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+### 3. Run the application
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Development (watch mode)
+npm run start:dev
+
+# Standard start
+npm run start
+
+# Production
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The API will be available at `http://localhost:3000/api/v1`.
 
-## Resources
+---
 
-Check out a few resources that may come in handy when working with NestJS:
+## API Reference
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Upload Files
 
-## Support
+**`POST /api/v1/file/upload`**
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Uploads one or more files. They are bundled into a ZIP, stored on Cloudinary, and an access code is returned.
 
-## Stay in touch
+**Request** — `multipart/form-data`
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+| Field | Type | Description |
+|---|---|---|
+| `files` | `File[]` | One or more files to upload |
+
+**Constraints**
+- Total upload size must not exceed **50 MB**
+- `.exe`, `.bat`, and `.sh` files are blocked
+
+**Response `200 OK`**
+
+```json
+{
+  "message": "File(s) uploaded successfully",
+  "accessCode": "abc-123",
+  "url": "https://res.cloudinary.com/...",
+  "expiresAt": "2026-02-21T12:00:00.000Z"
+}
+```
+
+---
+
+### Download Files
+
+**`GET /api/v1/file/download/:filecode`**
+
+Downloads the ZIP bundle associated with the given access code.
+
+**Path Parameter**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `filecode` | `string` | The access code returned on upload |
+
+**Responses**
+
+| Status | Meaning |
+|---|---|
+| `200 OK` | Returns the ZIP file as a binary download stream |
+| `404 Not Found` | No bundle exists for the given code |
+| `410 Gone` | The bundle link has expired |
+| `500 Internal Server Error` | Could not reach Cloudinary file storage |
+
+---
+
+## Project Structure
+
+```
+src/
+├── app.module.ts                   # Root module
+├── main.ts                         # Entry point (port, global prefix)
+├── configurations/
+│   ├── cloudinary.module.ts        # Cloudinary feature module
+│   └── cloudinary.provider.ts      # Cloudinary SDK configuration
+└── file/
+    ├── file.controller.ts          # Upload & download route handlers
+    ├── file.service.ts             # Core business logic
+    ├── file.module.ts              # File feature module
+    ├── task.service.ts             # Cron job — midnight expired bundle cleanup
+    ├── schema/
+    │   └── bundle.schema.ts        # Mongoose schema for Bundle documents
+    ├── utilities/
+    │   ├── generateCode.utility.ts # Unique access code generator
+    │   ├── upload.utility.ts       # Cloudinary upload helper
+    │   └── zip.utility.ts          # File zipping helper (archiver)
+    └── validation/
+        └── file.validation_pipe.ts # Multer file validation pipe
+```
+
+---
+
+## Bundle Schema (MongoDB)
+
+| Field | Type | Description |
+|---|---|---|
+| `accessCode` | `string` | Short unique identifier used in the download URL |
+| `cloudinaryUrl` | `string` | Public download URL on Cloudinary |
+| `cloudinaryPublicId` | `string` | Cloudinary asset ID, used for deletion |
+| `expiresAt` | `Date` | Expiry timestamp (default: 6 hours from upload time) |
+
+---
+
+## Scripts
+
+```bash
+npm run start:dev     # Start in watch mode (development)
+npm run build         # Compile TypeScript to JavaScript
+npm run start:prod    # Run the compiled production build
+npm run lint          # Lint and auto-fix source files
+npm run format        # Format source files with Prettier
+npm run test          # Run unit tests
+npm run test:e2e      # Run end-to-end tests
+npm run test:cov      # Generate test coverage report
+```
+
+---
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+UNLICENSED — private project.

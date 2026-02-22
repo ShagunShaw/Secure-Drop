@@ -21,7 +21,7 @@ export class MultipleFilesValidationPipe implements PipeTransform {
 
     const blockedExtensions = ['.sh', '.bat', '.exe'];
 
-    const MAX_TOTAL_SIZE = 50 * 1024 * 1024; // 50MB
+    const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB
     let totalSize = 0;
 
     files.forEach(file => {
@@ -37,7 +37,7 @@ export class MultipleFilesValidationPipe implements PipeTransform {
 
       if (totalSize > MAX_TOTAL_SIZE) {
         throw new BadRequestException(
-          `Total file size exceeds the limit of 50MB`,
+          `Total file size exceeds the limit of 10MB`,
         );
       }      
 
