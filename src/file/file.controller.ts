@@ -4,11 +4,14 @@ import type { Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { MultipleFilesValidationPipe } from './validation/file.validation_pipe';
 import axios from 'axios';
+import { Throttle } from '@nestjs/throttler';
+import { DownloadLimit, UploadLimit } from 'src/rate_limiters/throttler.decorator';
 
 @Controller('file')
 export class FileController {
     constructor(private readonly fileService: FileService) {}
 
+    @UploadLimit()          // For rate limiting
     @Post('upload')
     @HttpCode(201) // Explicitly set the status code if every goes right
     @UseInterceptors(FilesInterceptor('files'))     // 'files' must match the Key in Postman. And if we want to add some other data with the files, we must use the @Body() decorator
@@ -25,7 +28,7 @@ export class FileController {
         };
     }
 
-
+    @DownloadLimit()       // This is used for rate limiting
     @Get('download/:filecode')
     @HttpCode(200)
     async getFile(@Param('filecode') filecode: string, @Res() res: Response) {
