@@ -11,6 +11,7 @@ A secure, temporary file-sharing REST API built with NestJS. Upload one or more 
 - **Automatic expiry** — bundles expire after a configurable time window (default: 6 hours).
 - **Daily cleanup** — a scheduled cron job runs every midnight to delete expired bundles from both Cloudinary and MongoDB.
 - **File validation** — blocks dangerous file types (`.exe`, `.bat`, `.sh`) and enforces a 10 MB total upload limit.
+- **Rate limiting** — upload route is capped at **3 requests / 60 s** and download route at **20 requests / 60 s** per client to prevent abuse.
 - **Cloud storage** — files are stored on Cloudinary; metadata is persisted in MongoDB.
 
 ---
@@ -25,6 +26,7 @@ A secure, temporary file-sharing REST API built with NestJS. Upload one or more 
 | File Uploads | [Multer](https://github.com/expressjs/multer) (memory storage) |
 | Compression | [Archiver](https://www.archiverjs.com/) |
 | Scheduling | [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) |
+| Rate Limiting | [@nestjs/throttler](https://docs.nestjs.com/security/rate-limiting) |
 
 ---
 
@@ -92,6 +94,7 @@ Uploads one or more files. They are bundled into a ZIP, stored on Cloudinary, an
 **Constraints**
 - Total upload size must not exceed **50 MB**
 - `.exe`, `.bat`, and `.sh` files are blocked
+- Rate limited to **3 requests per 60 seconds** per client
 
 **Response `200 OK`**
 
@@ -125,6 +128,7 @@ Downloads the ZIP bundle associated with the given access code.
 | `200 OK` | Returns the ZIP file as a binary download stream |
 | `404 Not Found` | No bundle exists for the given code |
 | `410 Gone` | The bundle link has expired |
+| `429 Too Many Requests` | Rate limit exceeded (20 requests / 60 s) |
 | `500 Internal Server Error` | Could not reach Cloudinary file storage |
 
 ---
@@ -151,6 +155,8 @@ src/
     │   └── zip.utility.ts          # File zipping helper (archiver)
     └── validation/
         └── file.validation_pipe.ts # Multer file validation pipe
+rate_limiters/
+└── throttler.decorator.ts          # Custom @UploadLimit & @DownloadLimit decorators
 ```
 
 ---
