@@ -6,6 +6,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   const expressApp = app.getHttpAdapter().getInstance();
   expressApp.set('trust proxy', true);
+  app.enableCors();
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

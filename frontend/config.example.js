@@ -1,0 +1,3 @@
+const CONFIG = {
+  BASE_URL: 'your_backend_url_here'
+};

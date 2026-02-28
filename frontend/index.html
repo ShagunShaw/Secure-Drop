@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SecureDrop — Secure File Transfer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="grid-bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<!-- Upload Page -->
+<div class="page active" id="page-upload">
+  <header>
+    <a class="logo" href="#" onclick="return false;">
+      <div class="logo-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+      </div>
+      <span class="logo-text">Secure<span>Drop</span></span>
+    </a>
+    <nav>
+      <button class="nav-btn active" onclick="showPage('upload')">Upload</button>
+      <button class="nav-btn" onclick="showPage('download')">Download</button>
+    </nav>
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span>SYSTEM ONLINE</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div class="page-tag">Encrypted Transfer</div>
+      <h1 class="page-title">Drop Your Files</h1>
+      <p class="page-subtitle">Upload files and receive a unique access code. Share the code — your recipient does the rest.</p>
+    </div>
+
+    <div class="card">
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" multiple />
+        <div class="drop-icon">
+          <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" /></svg>
+        </div>
+        <p class="drop-text"><strong>Click to browse</strong> or drag & drop files here</p>
+        <p class="drop-meta">MAX 50 MB TOTAL &nbsp;·&nbsp; NO .EXE .BAT .SH &nbsp;·&nbsp; BUNDLED AS ZIP</p>
+      </div>
+
+      <div class="file-list" id="fileList"></div>
+
+      <div class="progress-wrap" id="progressWrap">
+        <div class="progress-label">
+          <span id="progressStatus">Uploading...</span>
+          <span id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="msg msg-error" id="uploadError"></div>
+
+      <button class="btn btn-primary" id="uploadBtn" onclick="handleUpload()" disabled>
+        Upload &amp; Generate Code
+      </button>
+
+      <div class="result-box" id="uploadResult" style="display:none;">
+        <div class="result-label">Upload Successful</div>
+        <div class="access-code-display">
+          <div class="access-code" id="resultCode">—</div>
+          <button class="copy-btn" id="copyBtn" onclick="copyCode()">COPY</button>
+        </div>
+        <div class="result-meta">
+          Expires: <span id="resultExpiry">—</span>&nbsp;&nbsp;·&nbsp;&nbsp;
+          <!-- <a id="resultUrl" href="#" style="color:var(--accent);font-family:var(--mono);font-size:11px;" target="_blank">View on Cloudinary ↗</a> -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span class="footer-text">© 2026 SecureDrop — Private &amp; Unlicensed</span>
+    <div class="footer-limits">
+      <span class="limit-tag">3 UPLOADS / MIN</span>
+      <span class="limit-tag">6HR EXPIRY</span>
+      <span class="limit-tag">50MB LIMIT</span>
+    </div>
+  </footer>
+</div>
+
+<!-- Download Page -->
+<div class="page" id="page-download">
+  <header>
+    <a class="logo" href="#" onclick="return false;">
+      <div class="logo-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+      </div>
+      <span class="logo-text">Secure<span>Drop</span></span>
+    </a>
+    <nav>
+      <button class="nav-btn" onclick="showPage('upload')">Upload</button>
+      <button class="nav-btn active" onclick="showPage('download')">Download</button>
+    </nav>
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span>SYSTEM ONLINE</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <div class="page-tag">Secure Retrieval</div>
+      <h1 class="page-title">Retrieve Bundle</h1>
+      <p class="page-subtitle">Enter your access code to download the encrypted ZIP bundle.</p>
+    </div>
+
+    <div class="card">
+      <div class="input-group">
+        <label class="input-label" for="codeInput">Access Code</label>
+        <input
+          class="code-input"
+          id="codeInput"
+          type="text"
+          placeholder="ABC-123"
+          maxlength="20"
+          oninput="onCodeInput(this)"
+          onkeydown="if(event.key==='Enter') handleDownload()"
+        />
+      </div>
+
+      <div class="msg msg-error" id="downloadError"></div>
+      <div class="msg msg-info" id="downloadInfo"></div>
+      <div class="msg msg-success" id="downloadSuccess"></div>
+
+      <div class="progress-wrap" id="downloadProgressWrap">
+        <div class="progress-label">
+          <span id="downloadProgressStatus">Preparing download...</span>
+          <span></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="downloadProgressFill"></div></div>
+      </div>
+
+      <button class="btn btn-primary" id="downloadBtn" onclick="handleDownload()" disabled>
+        Download ZIP Bundle
+      </button>
+      <button class="btn btn-secondary" style="margin-top:12px;" onclick="showPage('upload')">
+        ← Upload New Files
+      </button>
+    </div>
+
+    <div style="margin-top:32px; display:flex; gap:32px; max-width:560px; width:100%;">
+      <div style="flex:1; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:center;">
+        <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px;">Rate Limit</div>
+        <div style="font-size:22px; font-weight:800; color:var(--accent); font-family:var(--mono);">20</div>
+        <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted);">requests / min</div>
+      </div>
+      <div style="flex:1; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:center;">
+        <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px;">Bundle TTL</div>
+        <div style="font-size:22px; font-weight:800; color:var(--accent); font-family:var(--mono);">6H</div>
+        <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted);">auto-cleanup</div>
+      </div>
+      <div style="flex:1; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:center;">
+        <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px;">Format</div>
+        <div style="font-size:22px; font-weight:800; color:var(--accent); font-family:var(--mono);">ZIP</div>
+        <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted);">bundled output</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <span class="footer-text">© 2026 SecureDrop — Private &amp; Unlicensed</span>
+    <div class="footer-limits">
+      <span class="limit-tag">20 DOWNLOADS / MIN</span>
+      <span class="limit-tag">CLOUDINARY CDN</span>
+    </div>
+  </footer>
+</div>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

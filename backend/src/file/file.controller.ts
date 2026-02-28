@@ -21,6 +21,7 @@ export class FileController {
         const timeLimit= hour + 'h';
 
         const result= this.fileService.uploadFile(files, timeLimit);
+        console.log("from controller ", result);
         return {
             status: 201,
             message: "File uploaded successfully",
