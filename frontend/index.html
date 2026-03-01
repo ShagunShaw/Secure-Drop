@@ -64,6 +64,30 @@
 
       <div class="msg msg-error" id="uploadError"></div>
 
+      <!-- TTL Slider -->
+<div class="slider-wrap">
+  <div class="slider-header">
+    <span class="slider-label">Bundle Expiry</span>
+    <div class="slider-value" id="sliderDisplay">6<span>hrs</span></div>
+  </div>
+  <input
+    type="range"
+    id="ttlSlider"
+    min="1"
+    max="24"
+    value="6"
+    step="1"
+    oninput="onSliderChange(this.value)"
+  />
+  <div class="slider-ticks">
+    <span>1h</span>
+    <span>6h</span>
+    <span>12h</span>
+    <span>18h</span>
+    <span>24h</span>
+  </div>
+</div>
+
       <button class="btn btn-primary" id="uploadBtn" onclick="handleUpload()" disabled>
         Upload &amp; Generate Code
       </button>
@@ -76,7 +100,6 @@
         </div>
         <div class="result-meta">
           Expires: <span id="resultExpiry">—</span>&nbsp;&nbsp;·&nbsp;&nbsp;
-          <!-- <a id="resultUrl" href="#" style="color:var(--accent);font-family:var(--mono);font-size:11px;" target="_blank">View on Cloudinary ↗</a> -->
         </div>
       </div>
     </div>
@@ -85,9 +108,6 @@
   <footer>
     <span class="footer-text">© 2026 SecureDrop — Private &amp; Unlicensed</span>
     <div class="footer-limits">
-      <span class="limit-tag">3 UPLOADS / MIN</span>
-      <span class="limit-tag">6HR EXPIRY</span>
-      <span class="limit-tag">50MB LIMIT</span>
     </div>
   </footer>
 </div>
@@ -161,7 +181,7 @@
       <div style="flex:1; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:center;">
         <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px;">Bundle TTL</div>
         <div style="font-size:22px; font-weight:800; color:var(--accent); font-family:var(--mono);">6H</div>
-        <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted);">auto-cleanup</div>
+        <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted);">default</div>
       </div>
       <div style="flex:1; padding:20px; background:var(--surface); border:1px solid var(--border); border-radius:12px; text-align:center;">
         <div style="font-family:var(--mono); font-size:10px; color:var(--text-muted); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:8px;">Format</div>
@@ -174,13 +194,11 @@
   <footer>
     <span class="footer-text">© 2026 SecureDrop — Private &amp; Unlicensed</span>
     <div class="footer-limits">
-      <span class="limit-tag">20 DOWNLOADS / MIN</span>
-      <span class="limit-tag">CLOUDINARY CDN</span>
     </div>
   </footer>
 </div>
 
-<script src="config.js"></script>
+<script src="config.js"></script>       <!-- Now all the elements of my config.js is available globally -->
 <script src="script.js"></script>
 </body>
 </html>

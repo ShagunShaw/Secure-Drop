@@ -92,6 +92,18 @@ function renderFileList() {
     });
 }
 
+function onSliderChange(val) {
+    const display = document.getElementById('sliderDisplay');
+    display.innerHTML = `${val}<span>hrs</span>`;
+
+    // Update the gradient fill on the track
+    const slider = document.getElementById('ttlSlider');
+    const pct = ((val - 1) / (24 - 1)) * 100;
+    slider.style.background = `linear-gradient(to right, var(--accent) ${pct}%, var(--border) ${pct}%)`;
+}
+
+onSliderChange(6);
+
 async function handleUpload() {
     const btn = document.getElementById('uploadBtn');
     const err = document.getElementById('uploadError');
@@ -104,8 +116,10 @@ async function handleUpload() {
     prog.classList.add('show');
     animateProgress('progressFill', 'progressPct', 80, 1200);
 
+    const ttlHours = document.getElementById('ttlSlider').value;
     const formData = new FormData();
     selectedFiles.forEach(f => formData.append('files', f));
+    formData.append('timeLimit', ttlHours);
 
     try {
         const res = await fetch(`${BASE_URL}/file/upload`, { method: 'POST', body: formData });
@@ -117,15 +131,21 @@ async function handleUpload() {
         if (!res.ok) throw new Error(data.message || `Error ${res.status}`);
 
         document.getElementById('resultCode').textContent = data.data.accessCode;
-        document.getElementById('resultExpiry').textContent = new Date(data.data.expiresAt).toLocaleString();
-        // document.getElementById('resultUrl').href = data.url;
+        document.getElementById('resultExpiry').textContent = new Date(data.data.expiresAt).toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+});
         document.getElementById('uploadResult').style.display = 'block';
 
         selectedFiles = [];
         renderFileList();
         fileInput.value = '';
     } catch (e) {
-        showMsg(err, e.message || 'Upload failed. Is your server running?');
+        showMsg(err, e.message || 'Upload failed. Something went wrong!');
         prog.classList.remove('show');
     } finally {
         btn.innerHTML = 'Upload &amp; Generate Code';
@@ -227,8 +247,4 @@ function setProgress(fillId, pctId, val) {
 }
 
 
-// In my backend, for download the response is set at headers, so check if its coming from there or not
 // For an error, 'Failed to Fetch' k jgh, 'Failed to upload' daalo
-// In the reponse of expire time, set it to IST
-// Download waale section se neeche rate limit, ttl, format yh sb hatao
-// kuch cheeze properly align ni h usko align kro
