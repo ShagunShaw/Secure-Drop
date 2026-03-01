@@ -15,13 +15,12 @@ export class FileController {
     @Post('upload')
     @HttpCode(201) // Explicitly set the status code if every goes right
     @UseInterceptors(FilesInterceptor('files'))     // 'files' must match the Key in Postman. And if we want to add some other data with the files, we must use the @Body() decorator
-    uploadFile(@UploadedFiles(MultipleFilesValidationPipe) files: Array<Express.Multer.File>,
+    async uploadFile(@UploadedFiles(MultipleFilesValidationPipe) files: Array<Express.Multer.File>,
                @Body('timeLimit') limit?: string) {    // Using '?' makes it optional and clearer
         const hour= Number(limit)  ||  6;
         const timeLimit= hour + 'h';
 
-        const result= this.fileService.uploadFile(files, timeLimit);
-        console.log("from controller ", result);
+        const result= await this.fileService.uploadFile(files, timeLimit);
         return {
             status: 201,
             message: "File uploaded successfully",

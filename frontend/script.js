@@ -116,8 +116,6 @@ async function handleUpload() {
 
         if (!res.ok) throw new Error(data.message || `Error ${res.status}`);
 
-        console.log("response is", res)
-        console.log("data is", data)
         document.getElementById('resultCode').textContent = data.data.accessCode;
         document.getElementById('resultExpiry').textContent = new Date(data.data.expiresAt).toLocaleString();
         // document.getElementById('resultUrl').href = data.url;
@@ -231,3 +229,6 @@ function setProgress(fillId, pctId, val) {
 
 // In my backend, for download the response is set at headers, so check if its coming from there or not
 // For an error, 'Failed to Fetch' k jgh, 'Failed to upload' daalo
+// In the reponse of expire time, set it to IST
+// Download waale section se neeche rate limit, ttl, format yh sb hatao
+// kuch cheeze properly align ni h usko align kro
