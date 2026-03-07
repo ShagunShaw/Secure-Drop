@@ -29,7 +29,9 @@ export class TasksService {
     for (const bundle of expiredBundles) {
       try {
         // Delete from Cloudinary using the stored PublicID
-        await cloudinary.uploader.destroy(bundle.cloudinaryPublicId);
+        await cloudinary.uploader.destroy(`${bundle.cloudinaryPublicId}`, 
+          { resource_type: "raw" }      // For deleting any file other than images in cloudinary, we need to specify it's 'resource_type'
+        );
 
         // Delete from MongoDB
         await this.bundleModel.deleteOne({ _id: bundle._id });
